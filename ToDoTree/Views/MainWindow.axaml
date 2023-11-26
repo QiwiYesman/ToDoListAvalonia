@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ToDoTree.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ToDoTree.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ToDoTree">
+    
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom">
+            <WrapPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Button Content="Refresh" Command="{Binding Read}"/>
+                <Button Content="Exit" Command="{Binding $parent[Window].Close}"/>
+                <Button Content="Confirm" Command="{Binding Save}"/>
+            </WrapPanel>
+            <WrapPanel DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <Button Content="Add" Command="{Binding Add}"/>
+                <Button Content="Remove" Command="{Binding Remove}"/>
+                <ComboBox ItemsSource="{Binding ToDoStates}"
+                          SelectedItem="{Binding SelectedState, Mode=TwoWay}" />
+                <ComboBox ItemsSource="{Binding Priorities}"
+                          SelectedItem="{Binding SelectedPriority, Mode=TwoWay}" />
+            </WrapPanel> 
+        </DockPanel>
+        
+        <Grid ColumnDefinitions="4*,1, 6*">
+            <TreeView Grid.Column="0" ItemsSource="{Binding MainNodeList}"
+                      SelectedItem="{Binding SelectedNode, Mode=TwoWay}"
+                      SelectedItems="{Binding SelectedNodes, Mode=TwoWay}"
+                      SelectionMode="Multiple">
+                <TreeView.Styles>
+                    <Style Selector="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True"/>
+                    </Style>
+                </TreeView.Styles>
+                <TreeView.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right"
+                                      Text="{Binding ToDoState, Mode=TwoWay}" Margin="3 0 3 0"/>
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="{Binding Priority, Mode=TwoWay}" Margin=" 3 0 3 0"/>
+                            <TextBox Text="{Binding Header, Mode=TwoWay}"/>
+                        </DockPanel>
+                    </TreeDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>  
+            <GridSplitter Grid.Column="1" Background="Red" Margin="5 0 5 0"/>
+            <TextBox Grid.Column="2" Text="{Binding SelectedNode.Description,
+             FallbackValue={x:Null}, Mode=TwoWay}"/>
+        </Grid>
+            
+    </DockPanel>
+    
+</Window>
